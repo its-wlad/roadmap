@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Роудмап DevOps и ИБ</title>
+<title>Роудмап DevOps + Go</title>
 <style>
 :root{--bg:#f7f7f5;--card:#fff;--tx:#1d1d1b;--mu:#6b6b66;--ac:#1f6feb;--ok:#2da44e;--bd:#e2e2de;--emp:#e8e8e4;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -29,72 +29,38 @@ summary span{color:var(--mu);font-weight:400;font-size:13px;white-space:nowrap}
 label{display:flex;gap:8px;align-items:flex-start;padding:3px 0;cursor:pointer}
 input{margin-top:4px;width:17px;height:17px;accent-color:var(--ok);flex:none}
 label.c span{text-decoration:line-through;color:var(--mu)}
+em{color:var(--mu);font-style:normal;font-size:12px;white-space:nowrap}
 .tip{font-size:13px;color:var(--mu)}
 </style>
 </head>
 <body>
 <main>
-<h1>Роудмап: DevOps и ИБ</h1>
-<p class="sub">52 недели · 26 спринтов по 2 недели · по 3 часа в день</p>
+<h1>Роудмап: DevOps + Go backend</h1>
+<p class="sub">26 спринтов по 2 недели · ~42 ч на спринт · 3 часа в день без выходных</p>
 <div class="card">
 <div class="row"><div class="stat">Общий прогресс<br><b id="pt">0%</b></div><div class="stat">Серия дней<br><b id="st">0</b></div><div class="stat">Всего занятий<br><b id="dt">0</b></div><button id="td">Сегодня позанимался</button></div>
 <div class="bar" style="margin-top:12px"><i id="pb" style="width:0"></i></div>
 <div class="heat" id="ht" title="Последние 28 дней"></div>
 </div>
 <div id="app"></div>
-<p class="tip">Правило дня: ~1 час теории и ~2 часа практики. Go: 2–3 часа в неделю в фоне, основной упор на него с 21-го спринта. Синхронизация между устройствами: <span id="sy">подключаюсь…</span> <button class="g" id="rs">Сбросить всё</button></p>
+<p class="tip">Шкала времени: до 6 ч познакомиться; 8–12 ч уверенно пользоваться; 14 ч и больше знать глубоко и объяснять на собеседовании. В день: ~1 ч теории, ~2 ч практики. Синхронизация между устройствами: <span id="sy">подключаюсь…</span> <button class="g" id="rs">Сбросить всё</button></p>
 </main>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script>
-const P=[
-["Фаза 1 · Linux и сети",[
-["Терминал",["Ubuntu в VM или WSL","ls, cd, cp, mv, grep, find, pipes","Права и пользователи","Пройти Linux Journey"]],
-["Сервер",["Арендовать VPS, ssh по ключам","systemd, journalctl, cron","apt, процессы, ufw"]],
-["Сети I",["OSI и TCP/IP","IP, маски, подсети","DNS, DHCP, NAT","ping, traceroute, dig, curl"]],
-["Сети II",["Wireshark и tcpdump","HTTP/HTTPS и TLS","nginx на VPS + Let’s Encrypt","iptables/nftables: основы"]]]],
-["Фаза 2 · Скрипты и Git",[
-["Bash",["Переменные, циклы, условия","3 скрипта: бэкап, диск, логи","sed, awk"]],
-["Git и Python",["Ветки, PR, rebase, GitHub-профиль","Python: файлы, requests, argparse","Скрипт для разбора логов или API"]]]],
-["Фаза 3 · Windows и эксплуатация",[
-["Windows Server",["AD DS: пользователи и группы","GPO","DNS/DHCP на Windows","PowerShell: основы"]],
-["Эксплуатация","Мониторинг Zabbix|Бэкапы и RAID|ITIL и тикет-системы|Резюме v1".split("|"),"Начинай откликаться на L2 / сисадмин / SOC L1"]]],
-["Фаза 4 · Docker и CI/CD",[
-["Docker I",["Образы и контейнеры","Dockerfile, multi-stage","Volumes и сети"]],
-["Docker II",["docker-compose","Приложение + БД + nginx","Registry и теги"]],
-["CI/CD I",["GitHub Actions или GitLab CI","Тесты и сборка в пайплайне","Секреты"]],
-["CI/CD II",["Автодеплой на VPS","Проект №1 с пайплайном","README и схема"]]]],
-["Фаза 5 · Облака и IaC",[
-["Облако",["IAM, VPC, виртуалки","Yandex Cloud или AWS free tier","Объектное хранилище"]],
-["Terraform I",["Провайдеры, ресурсы","Variables, state"]],
-["Terraform II",["Модули","VPS + сеть кодом"]],
-["Ansible",["Inventory, playbooks, roles","Проект №2: Terraform + Ansible"],"Откликайся на DevOps-стажировки и инфраструктурные роли"]]],
-["Фаза 6 · Kubernetes и мониторинг",[
-["K8s I",["Pod, Deployment, Service","minikube или kind"]],
-["K8s II",["Ingress, ConfigMap, Secret","Volumes","Helm"]],
-["K8s III",["Деплой проекта №1 в кластер","Probes и HPA"]],
-["Мониторинг",["Prometheus + Grafana","Алерты","Loki для логов"]],
-["Проект №3",["Полный стек: IaC + K8s + мониторинг","Go: свой exporter или CLI"]]]],
-["Фаза 7 · Безопасность",[
-["Основы ИБ",["OWASP Top 10","Криптография, хэши, TLS","TryHackMe Pre-Security"]],
-["SOC",["TryHackMe SOC Level 1","Wazuh или ELK как мини-SIEM","MITRE ATT&CK"]],
-["DevSecOps",["Trivy, gitleaks, Semgrep в пайплайне","Vault","Hardening Linux"]],
-["Практика",["10 машин или комнат HTB/CTF","K8s: RBAC и network policies","Написать writeup"]]]],
-["Фаза 8 · Финиш",[
-["Портфолио и поиск",["README и схемы архитектуры","Резюме на hh и LinkedIn","Пробные собеседования","Подача на DevOps-стажировки"]]]]
-];
+const P=[["Фаза 1 · Основы: Linux, Git, сети, старт Go", [["Linux", ["Терминал, файлы, права|12", "Процессы, systemd, логи|10", "Bash-скрипты|12", "VPS и ssh по ключам|8"]], ["Git и сети", ["Git: ветки, PR, rebase|10", "GitHub-профиль и README|4", "TCP/IP, DNS, порты|14", "HTTP, HTTPS, TLS, curl|8", "nginx на VPS|6"]], ["Go: база I", ["Синтаксис, типы, функции|14", "Структуры, методы, интерфейсы|14", "Ошибки, пакеты, модули|8", "20 задач на Exercism|6"]]]], ["Фаза 2 · Go и бэкенд", [["Go: база II", ["Горутины и каналы|14", "sync и context|10", "Тесты и бенчмарки|10", "Мини-проект: CLI-утилита|8"]], ["HTTP и REST", ["net/http, роутер chi или gin|12", "JSON, валидация, middleware|10", "REST API: CRUD|12", "OpenAPI/Swagger|4", "Тесты через curl и Postman|4"]], ["SQL и PostgreSQL", ["SQL: SELECT, JOIN, группировки|14", "Схемы и индексы|10", "Транзакции и миграции|8", "Go + pgx или sqlx|10"]], ["Проект №1: API", ["Аутентификация JWT|10", "Слои и структура проекта|8", "Postgres + миграции|10", "Юнит- и интеграционные тесты|10", "README и документация|4"]], ["Кеш и очереди", ["Redis|12", "RabbitMQ или Kafka: основы|16", "slog, конфиги, graceful shutdown|8", "Rate limiting и паттерны|6"]], ["Проект №2", ["Фоновые задачи через очередь|14", "Кеширование|8", "Health-check и метрики|6", "Нагрузочный тест k6|8", "Рефакторинг|6"]]]], ["Фаза 3 · Docker и CI/CD", [["Docker", ["Образы, контейнеры, слои|10", "Dockerfile, multi-stage для Go|12", "Volumes и сети|8", "docker-compose: app + БД + Redis|12"]], ["CI/CD", ["GitHub Actions: workflow, jobs|12", "Линтер, тесты, сборка образа|14", "Registry, теги, секреты|8", "Автодеплой на VPS|8"]], ["Эксплуатация Linux", ["Продвинутый Bash, cron, rsync|10", "nginx reverse proxy + TLS|10", "ssh-туннели, ufw|8", "Бэкапы PostgreSQL|8", "Диагностика: top, ss, strace|6"]], ["Проект №3: деплой", ["Проекты 1–2 на VPS через CI/CD|16", "Домен и HTTPS|6", "Схема архитектуры|4", "README с описанием|4", "Запас на закрепление|12"], "Можно откликаться на стажировки и junior Go / DevOps"]]], ["Фаза 4 · Облака и IaC", [["Облако", ["IAM, VPC, VM, балансировщик|14", "Yandex Cloud или AWS free tier|12", "Managed Postgres, S3|10", "Бюджеты и стоимость|6"]], ["Terraform", ["Провайдеры, ресурсы, variables|14", "State и remote backend|10", "Модули|12", "VPS + сеть кодом|6"]], ["Ansible", ["Inventory, playbooks|14", "Roles, templates, vault|12", "Настройка сервера целиком|10", "Terraform + Ansible вместе|6"]], ["Проект №4: IaC", ["Инфраструктура проекта кодом|20", "CI применяет Terraform|10", "Документация|4", "Закрепление|8"]]]], ["Фаза 5 · Kubernetes и мониторинг", [["K8s I", ["Архитектура, Pod, Deployment|14", "Service, Ingress|10", "ConfigMap, Secret|8", "minikube или kind: практика|10"]], ["K8s II", ["Volumes, StatefulSet|8", "Probes, resources, HPA|10", "Helm|12", "kubectl: диагностика|8", "Namespaces, RBAC: основы|4"]], ["K8s III", ["Деплой проекта в кластер|16", "Ingress + TLS|8", "GitOps: ArgoCD|12", "Разбор типовых аварий|6"]], ["Мониторинг", ["Prometheus и метрики Go-сервиса|14", "Grafana: дашборды|10", "Алерты|8", "Логи: Loki или ELK|10"], "Теперь откликайся активно на DevOps и Go позиции"]]], ["Фаза 6 · Продвинутый Go и платформа", [["Go для DevOps", ["CLI на cobra|12", "Prometheus exporter|12", "client-go: работа с K8s API|12", "Релиз бинарника, тесты|6"]], ["gRPC и микросервисы", ["Protobuf и gRPC|14", "Разбиение на 2–3 сервиса|14", "Трейсинг OpenTelemetry|8", "Retry, timeout, надёжность|6"]], ["Проект №5: финал", ["Микросервисы в K8s + мониторинг + CI/CD|30", "Схема, README, демо|12"]]]], ["Фаза 7 · Подготовка и поиск", [["Подготовка", ["Алгоритмы: LeetCode easy/medium|16", "Go изнутри: runtime, GC, планировщик|8", "Теория: сети, Linux, K8s|10", "Резюме и профили|4", "Пробные собеседования|4"]], ["Поиск работы", ["Отклики|14", "Тестовые задания|12", "Собеседования и разбор|10", "Доработка портфолио|6"]]]]];
 let S={d:{},days:[]},tm=null,pending=false;
 const tg=window.Telegram&&window.Telegram.WebApp,cs=tg&&tg.initData&&tg.CloudStorage;
-try{S=JSON.parse(localStorage.getItem("devops_roadmap"))||S}catch(e){}
+try{S=JSON.parse(localStorage.getItem("godevops2"))||S}catch(e){}
 const setSync=t=>{const e=document.getElementById("sy");if(e)e.textContent=t};
 const csSet=(k,v)=>new Promise((a,b)=>cs.setItem(k,v,(e,o)=>e?b(e):a(o)));
 const csGet=k=>new Promise((a,b)=>cs.getItems(k,(e,v)=>e?b(e):a(v)));
-async function push(){const s=JSON.stringify(S),n=Math.ceil(s.length/3500)||1;for(let i=0;i<n;i++)await csSet("p"+i,s.slice(i*3500,(i+1)*3500));await csSet("n",String(n))}
-const save=()=>{try{localStorage.setItem("devops_roadmap",JSON.stringify(S))}catch(e){}
+async function push(){const s=JSON.stringify(S),n=Math.ceil(s.length/3500)||1;for(let i=0;i<n;i++)await csSet("g"+i,s.slice(i*3500,(i+1)*3500));await csSet("gn",String(n))}
+const save=()=>{try{localStorage.setItem("godevops2",JSON.stringify(S))}catch(e){}
 if(!cs)return;pending=true;setSync("сохраняю…");clearTimeout(tm);tm=setTimeout(()=>push().then(()=>{pending=false;setSync("синхронизировано ✓")}).catch(()=>{pending=false;setSync("не удалось синхронизировать")}),400)};
-async function pull(){if(!cs||pending)return;try{const n=+((await csGet(["n"])).n||0);
+async function pull(){if(!cs||pending)return;try{const n=+((await csGet(["gn"])).gn||0);
 if(!n){if(S.days.length||Object.keys(S.d).length)await push();setSync("синхронизировано ✓");return}
-const ks=[...Array(n).keys()].map(i=>"p"+i),v=await csGet(ks);S=JSON.parse(ks.map(k=>v[k]).join(""));S.d=S.d||{};S.days=S.days||[];
-try{localStorage.setItem("devops_roadmap",JSON.stringify(S))}catch(e){}render();setSync("синхронизировано ✓")}catch(e){setSync("нет связи, прогресс хранится на устройстве")}}
+const ks=[...Array(n).keys()].map(i=>"g"+i),v=await csGet(ks);S=JSON.parse(ks.map(k=>v[k]).join(""));S.d=S.d||{};S.days=S.days||[];
+try{localStorage.setItem("godevops2",JSON.stringify(S))}catch(e){}render();setSync("синхронизировано ✓")}catch(e){setSync("нет связи, прогресс хранится на устройстве")}}
 function initSync(){if(!cs){setSync("хранится на этом устройстве (открой через Telegram, чтобы синхронизировать)");return}
 tg.ready();tg.expand();pull();document.addEventListener("visibilitychange",()=>{if(!document.hidden)pull()})}
 const iso=d=>d.toISOString().slice(0,10);
@@ -102,17 +68,18 @@ const $=id=>document.getElementById(id);
 function streak(){let n=0,d=new Date();if(!S.days.includes(iso(d)))d.setDate(d.getDate()-1);
 while(S.days.includes(iso(d))){n++;d.setDate(d.getDate()-1)}return n}
 function render(){
-let all=0,dn=0,k=0,cur=-1,h="";
+let aH=0,dH=0,k=0,cur=-1,h="";
 P.forEach((ph,pi)=>{let pa=0,pd=0,body="";
-ph[1].forEach(sp=>{k++;const ts=sp[1];let sd=0;
-const items=ts.map((t,i)=>{const id=k+"-"+i,c=S.d[id];if(c)sd++;return `<label class="${c?"c":""}"><input type="checkbox" data-id="${id}" ${c?"checked":""}><span>${t}</span></label>`}).join("");
-pa+=ts.length;pd+=sd;
-body+=`<div class="sp ${sd==ts.length?"full":""}"><h3>Спринт ${k}: ${sp[0]} <small>${sd}/${ts.length}</small></h3>${sp[2]?`<div class="note">★ ${sp[2]}</div>`:""}${items}</div>`});
-if(cur<0&&pd<pa)cur=pi;all+=pa;dn+=pd;
+ph[1].forEach(sp=>{k++;let sd=0,sh=0;
+const items=sp[1].map((t,i)=>{const [tx,hr]=t.split("|"),id=k+"-"+i,c=S.d[id];sh+=+hr;aH+=+hr;if(c){sd++;dH+=+hr}
+return `<label class="${c?"c":""}"><input type="checkbox" data-id="${id}" ${c?"checked":""}><span>${tx} <em>${hr} ч</em></span></label>`}).join("");
+pa+=sp[1].length;pd+=sd;
+body+=`<div class="sp ${sd==sp[1].length?"full":""}"><h3>Спринт ${k}: ${sp[0]} <small>${sd}/${sp[1].length} · ${sh} ч</small></h3>${sp[2]?`<div class="note">★ ${sp[2]}</div>`:""}${items}</div>`});
+if(cur<0&&pd<pa)cur=pi;
 h+=`<details ${cur===pi?"open":""}><summary>${ph[0]}<span>${pd}/${pa}</span></summary>${body}</details>`});
 $("app").innerHTML=h;
-const pc=Math.round(dn/all*100);
-$("pt").textContent=pc+"%";$("pb").style.width=pc+"%";
+const pc=Math.round(dH/aH*100);
+$("pt").textContent=pc+"% · "+dH+"/"+aH+" ч";$("pb").style.width=pc+"%";
 $("st").textContent=streak();$("dt").textContent=S.days.length;
 const t=iso(new Date()),on=S.days.includes(t);
 $("td").textContent=on?"Сегодня засчитано ✓":"Сегодня позанимался";$("td").className=on?"done":"";
