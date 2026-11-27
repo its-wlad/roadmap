@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Роудмап DevOps + Go</title>
+<style>
+:root{--bg:#f7f7f5;--card:#fff;--tx:#1d1d1b;--mu:#6b6b66;--ac:#1f6feb;--ok:#2da44e;--bd:#e2e2de;--emp:#e8e8e4;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#161615;--card:#212120;--tx:#ecece8;--mu:#9a9a94;--ac:#58a6ff;--ok:#3fb950;--bd:#33332f;--emp:#2e2e2b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#161615;--card:#212120;--tx:#ecece8;--mu:#9a9a94;--ac:#58a6ff;--ok:#3fb950;--bd:#33332f;--emp:#2e2e2b;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:760px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:4px 0 2px}.sub{color:var(--mu);margin:0 0 14px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:12px}
+.bar{height:10px;background:var(--emp);border-radius:6px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ac);transition:width .3s}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.stat{font-size:13px;color:var(--mu)}.stat b{color:var(--tx);font-size:18px}
+button{font:inherit;background:var(--ac);color:#fff;border:0;border-radius:8px;padding:8px 14px;cursor:pointer}
+button.g{background:transparent;color:var(--mu);border:1px solid var(--bd);padding:4px 10px;font-size:12px}
+button.done{background:var(--ok)}
+.heat{display:flex;gap:3px;margin-top:10px;flex-wrap:wrap}.heat span{width:16px;height:16px;border-radius:4px;background:var(--emp)}.heat .on{background:var(--ok)}
+details{margin-bottom:10px}summary{cursor:pointer;font-weight:600;padding:10px 12px;background:var(--card);border:1px solid var(--bd);border-radius:10px;display:flex;justify-content:space-between;gap:8px}
+summary span{color:var(--mu);font-weight:400;font-size:13px;white-space:nowrap}
+.sp{margin:8px 0 0 4px;padding:10px 12px;border-left:3px solid var(--bd)}.sp.full{border-color:var(--ok)}
+.sp h3{margin:0 0 4px;font-size:15px}.sp h3 small{color:var(--mu);font-weight:400}
+.note{font-size:13px;color:var(--ac);margin:2px 0 4px}
+label{display:flex;gap:8px;align-items:flex-start;padding:3px 0;cursor:pointer}
+input{margin-top:4px;width:17px;height:17px;accent-color:var(--ok);flex:none}
+label.c span{text-decoration:line-through;color:var(--mu)}
+em{color:var(--mu);font-style:normal;font-size:12px;white-space:nowrap}
+.tip{font-size:13px;color:var(--mu)}
+</style>
+</head>
+<body>
+<main>
+<h1>Роудмап: DevOps (90%) + Go (10%)</h1>
+<p class="sub">28 спринтов по 2 недели · ~42 ч на спринт · 3 часа в день · цель: middle DevOps · рынок СНГ</p>
+<div class="card">
+<div class="row"><div class="stat">Общий прогресс<br><b id="pt">0%</b></div><div class="stat">Серия дней<br><b id="st">0</b></div><div class="stat">Всего занятий<br><b id="dt">0</b></div><button id="td">Сегодня позанимался</button></div>
+<div class="bar" style="margin-top:12px"><i id="pb" style="width:0"></i></div>
+<div class="heat" id="ht" title="Последние 28 дней"></div>
+</div>
+<div id="app"></div>
+<p class="tip">Шкала времени: до 6 ч познакомиться; 8–12 ч уверенно пользоваться; 14 ч и больше знать глубоко и объяснять на собеседовании. В день: ~1 ч теории, ~2 ч практики. Синхронизация между устройствами: <span id="sy">подключаюсь…</span> <button class="g" id="rs">Сбросить всё</button></p>
+</main>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>
+const P=[["Фаза 1 · Основы: Linux, сети, Git, старт Go",[["Linux I",["Терминал, файлы, права, пользователи|10","Пакетные менеджеры: apt, dnf|6","Процессы, сигналы, systemd|12","Логи: journald, logrotate|6","VPS и ssh по ключам|8"]],["Linux II и Bash",["Bash-скрипты: переменные, циклы, функции|14","grep, sed, awk, jq|8","cron, systemd timers, rsync|6","Диски, LVM, файловые системы|8","Виртуализация: KVM, Proxmox|6"]],["Сети I",["OSI, TCP/IP, адресация, подсети|14","DNS: записи, dig, резолвинг|10","HTTP, HTTPS, TLS, сертификаты|10","curl, tcpdump, ss, nmap|8"]],["Сети II и отказоустойчивость",["nginx: reverse proxy, TLS, балансировка|12","HAProxy + Keepalived (VRRP)|10","iptables/nftables, ufw|8","WireGuard и ssh-туннели|6","Let's Encrypt, certbot|6"]],["Git и Go: старт",["Git: ветки, rebase, PR|8","GitHub-профиль и README|4","Go: синтаксис, типы, функции|12","Go: структуры, интерфейсы|10","Go: ошибки, пакеты, модули|8"]]]],
+["Фаза 2 · Docker, CI/CD, базы данных",[["Docker",["Git-воркфлоу, trunk-based, code review|6","Образы, контейнеры, namespaces и cgroups|10","Dockerfile, multi-stage, оптимизация|12","Volumes и сети|6","docker-compose: многосервисный стек|8"]],["GitLab CI",["Свой GitLab: установка, runners (docker, shell)|10",".gitlab-ci.yml: stages, rules, cache, artifacts|12","Линтеры, тесты, сборка и push образа|8","Variables, секреты, environments|6","Автодеплой на VPS|6"]],["CI/CD II",["GitHub Actions: workflow, jobs, matrix|10","Jenkins: Jenkinsfile, агенты|10","Blue-green, canary, rolling|8","Nexus и Harbor: proxy-кеш Docker Hub, зеркала|8","SonarQube в пайплайне|6"]],["Базы данных в эксплуатации",["SQL: JOIN, индексы, EXPLAIN|10","PostgreSQL: администрирование, конфиги|10","Бэкапы и PITR (pgBackRest)|8","Репликация и failover, Patroni|8","Redis: персистентность, sentinel|6"]],["Проект №1: приложение на VPS",["Приложение в docker-compose (свой Go-сервис или open-source)|8","nginx + TLS + домен|6","GitLab CI: сборка, тесты, автодеплой|10","Бэкапы БД по cron и проверка восстановления|8","Схема архитектуры и README|6","Запас на закрепление|4"],"Можно откликаться на стажировки и junior DevOps"]]],
+["Фаза 3 · Облака, IaC, Go-инструменты",[["Go для DevOps I",["Горутины, каналы, sync, context|12","HTTP-сервер и клиент, JSON, middleware|10","CLI на cobra|10","Тесты, бенчмарки, golangci-lint|6","Релиз бинарника через CI (goreleaser)|4"]],["Облако I (Yandex Cloud)",["IAM, облака, каталоги, сервисные аккаунты|8","VPC, подсети, security groups, NAT|12","Compute Cloud, диски, балансировщик|10","Object Storage|6","Бюджеты и квоты|6"],"Концепции те же, что в AWS: IAM, VPC, EC2, S3. Освоишь одно, второе читается за пару дней"],["Облако II и Python",["Managed PostgreSQL и Redis|8","Instance Groups, автоскейлинг, ALB|10","Cloud DNS и сертификаты|4","Message Queue, Lockbox, KMS|6","Python: основы, venv, requests, работа с API|14"]],["Terraform I",["HCL, провайдеры, ресурсы, variables, outputs|14","State, remote backend, locking|10","Модули|10","Окружения dev/stage/prod|4","OpenTofu и зеркала провайдеров|4"]],["Terraform II и Ansible I",["tflint, checkov, terragrunt: обзор|6","terraform plan/apply через GitLab CI|8","Ansible: inventory, playbooks, модули|14","Roles, templates, handlers|14"]],["Ansible II и проект №2",["Vault, dynamic inventory, идемпотентность|8","Molecule: тесты ролей|6","Проект №2: сеть, VM, Managed PostgreSQL в Yandex Cloud через Terraform|14","Настройка серверов через Ansible|8","Python: скрипты автоматизации (API, отчёты)|6"],"Можно активно откликаться на junior+ DevOps"]]],
+["Фаза 4 · Kubernetes",[["K8s I",["Архитектура: control plane, etcd, kubelet|10","Pod, ReplicaSet, Deployment|10","Service, Ingress, DNS|10","ConfigMap, Secret|6","kind или minikube: практика|6"]],["K8s II",["PV, PVC, StatefulSet, Longhorn и Rook-Ceph: обзор|10","Probes, resources, QoS|8","HPA, VPA, Cluster Autoscaler|8","Affinity, taints, PDB|8","Job, CronJob, DaemonSet|8"]],["K8s III: безопасность и пакеты",["RBAC, ServiceAccount|8","NetworkPolicy, CNI (Calico, Cilium)|10","securityContext, Pod Security|6","Helm: charts, values, hooks|12","Kustomize|6"]],["K8s IV: GitOps и эксплуатация",["ArgoCD: sync, app-of-apps|12","ingress-nginx, cert-manager, external-dns|10","Кластер с нуля: kubeadm, HA control plane|12","Диагностика аварий, kubectl debug|8"]],["Проект №3: платформа в K8s",["Приложение в Managed K8s (Yandex) через Helm + ArgoCD|14","Ingress, TLS, DNS|6","Vault или External Secrets|8","GitLab CI собирает образ и обновляет манифест|8","Схема, README, демо|6"],"Откликайся на DevOps junior+ / middle−"]]],
+["Фаза 5 · Наблюдаемость, безопасность, SRE",[["Мониторинг",["Метрики, Prometheus, PromQL, exporters|12","Grafana: дашборды, переменные|6","Alertmanager: алерты в Telegram, on-call|6","kube-prometheus-stack|6","Zabbix: сервер, агенты, шаблоны, триггеры|12"]],["Логи и трейсинг",["Loki + Promtail/Alloy|8","ELK/OpenSearch и Graylog|10","OpenTelemetry, Tempo/Jaeger|12","Связь метрик, логов, трейсов|6","SLI, SLO, error budget|6"]],["Go для DevOps II",["Prometheus exporter на Go|12","client-go: работа с K8s API|14","Операторы: controller-runtime, kubebuilder|12","Тесты и релиз в CI|4"]],["DevSecOps",["HashiCorp Vault|12","Trivy, Semgrep, gitleaks|8","cosign и SBOM|6","OPA, Kyverno: policy as code|8","Hardening Linux, CIS|8"]],["Брокеры, mesh, SRE",["Kafka: топики, эксплуатация, мониторинг|12","RabbitMQ: эксплуатация|6","Istio или Linkerd: основы|10","Инциденты, runbook, postmortem|8","Capacity planning, нагрузка k6|6"]]]],
+["Фаза 6 · Финал и поиск работы",[["Проект №4: финальный",["Terraform + Ansible: инфраструктура в Yandex Cloud|12","Managed K8s + ArgoCD + Helm|10","Мониторинг, логи, алерты, SLO|8","GitLab CI + DevSecOps-проверки|6","Схема, README, runbook, демо|6"],"Теперь активно на middle DevOps"],["Подготовка и поиск",["Теория: Linux, сети, K8s для собеседований|8","Траблшутинг-сценарии: сервис лёг, что смотреть|6","System design для DevOps|6","Резюме: hh.ru, Хабр Карьера, LinkedIn, GitHub|4","Пробные собеседования|6","Практика CKA (killer.sh)|6","Отклики и тестовые задания|6"]]]]];
+let S={d:{},days:[]},tm=null,pending=false;
+const tg=window.Telegram&&window.Telegram.WebApp,cs=tg&&tg.initData&&tg.CloudStorage;
+try{S=JSON.parse(localStorage.getItem("devops90"))||S}catch(e){}
+const setSync=t=>{const e=document.getElementById("sy");if(e)e.textContent=t};
+const csSet=(k,v)=>new Promise((a,b)=>cs.setItem(k,v,(e,o)=>e?b(e):a(o)));
+const csGet=k=>new Promise((a,b)=>cs.getItems(k,(e,v)=>e?b(e):a(v)));
+async function push(){const s=JSON.stringify(S),n=Math.ceil(s.length/3500)||1;for(let i=0;i<n;i++)await csSet("d"+i,s.slice(i*3500,(i+1)*3500));await csSet("dn",String(n))}
+const save=()=>{try{localStorage.setItem("devops90",JSON.stringify(S))}catch(e){}
+if(!cs)return;pending=true;setSync("сохраняю…");clearTimeout(tm);tm=setTimeout(()=>push().then(()=>{pending=false;setSync("синхронизировано ✓")}).catch(()=>{pending=false;setSync("не удалось синхронизировать")}),400)};
+async function pull(){if(!cs||pending)return;try{const n=+((await csGet(["dn"])).dn||0);
+if(!n){if(S.days.length||Object.keys(S.d).length)await push();setSync("синхронизировано ✓");return}
+const ks=[...Array(n).keys()].map(i=>"d"+i),v=await csGet(ks);S=JSON.parse(ks.map(k=>v[k]).join(""));S.d=S.d||{};S.days=S.days||[];
+try{localStorage.setItem("devops90",JSON.stringify(S))}catch(e){}render();setSync("синхронизировано ✓")}catch(e){setSync("нет связи, прогресс хранится на устройстве")}}
+function initSync(){if(!cs){setSync("хранится на этом устройстве (открой через Telegram, чтобы синхронизировать)");return}
+tg.ready();tg.expand();pull();document.addEventListener("visibilitychange",()=>{if(!document.hidden)pull()})}
+const iso=d=>d.toISOString().slice(0,10);
+const $=id=>document.getElementById(id);
+function streak(){let n=0,d=new Date();if(!S.days.includes(iso(d)))d.setDate(d.getDate()-1);
+while(S.days.includes(iso(d))){n++;d.setDate(d.getDate()-1)}return n}
+function render(){
+let aH=0,dH=0,k=0,cur=-1,h="";
+P.forEach((ph,pi)=>{let pa=0,pd=0,body="";
+ph[1].forEach(sp=>{k++;let sd=0,sh=0;
+const items=sp[1].map((t,i)=>{const [tx,hr]=t.split("|"),id=k+"-"+i,c=S.d[id];sh+=+hr;aH+=+hr;if(c){sd++;dH+=+hr}
+return `<label class="${c?"c":""}"><input type="checkbox" data-id="${id}" ${c?"checked":""}><span>${tx} <em>${hr} ч</em></span></label>`}).join("");
+pa+=sp[1].length;pd+=sd;
+body+=`<div class="sp ${sd==sp[1].length?"full":""}"><h3>Спринт ${k}: ${sp[0]} <small>${sd}/${sp[1].length} · ${sh} ч</small></h3>${sp[2]?`<div class="note">★ ${sp[2]}</div>`:""}${items}</div>`});
+if(cur<0&&pd<pa)cur=pi;
+h+=`<details ${cur===pi?"open":""}><summary>${ph[0]}<span>${pd}/${pa}</span></summary>${body}</details>`});
+$("app").innerHTML=h;
+const pc=Math.round(dH/aH*100);
+$("pt").textContent=pc+"% · "+dH+"/"+aH+" ч";$("pb").style.width=pc+"%";
+$("st").textContent=streak();$("dt").textContent=S.days.length;
+const t=iso(new Date()),on=S.days.includes(t);
+$("td").textContent=on?"Сегодня засчитано ✓":"Сегодня позанимался";$("td").className=on?"done":"";
+let hh="";for(let i=27;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);hh+=`<span class="${S.days.includes(iso(d))?"on":""}" title="${iso(d)}"></span>`}
+$("ht").innerHTML=hh}
+$("app").addEventListener("change",e=>{const id=e.target.dataset.id;if(!id)return;
+const open=[...document.querySelectorAll("details")].map(x=>x.open);
+if(e.target.checked)S.d[id]=1;else delete S.d[id];save();render();
+document.querySelectorAll("details").forEach((x,i)=>x.open=open[i])});
+$("td").onclick=()=>{const t=iso(new Date()),i=S.days.indexOf(t);if(i<0)S.days.push(t);else S.days.splice(i,1);save();render()};
+let armed=0;$("rs").onclick=function(){if(!armed){armed=1;this.textContent="Нажми ещё раз для сброса";setTimeout(()=>{armed=0;this.textContent="Сбросить всё"},3000);return}
+S={d:{},days:[]};save();armed=0;this.textContent="Сбросить всё";render()};
+render();
+initSync();
+</script>
+</body>
+</html>
